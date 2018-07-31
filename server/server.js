@@ -1,36 +1,59 @@
-//root of the app, first file to run
-const mongoose = require('mongoose');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/TodoApp', {
-    useNewUrlParser: true
+
+var {
+    mongoose
+} = require('./db/mongoose');
+var {
+    Todo
+} = require('./models/todo');
+var {
+    User
+} = require('./models/user');
+// import mongoose from './db/mongoose';
+// import Todo from './models/todo';
+// import User from './models/user';
+
+
+var app = express();
+app.use(bodyParser.json()); //send json to application
+
+app.post('/todos', (req, res) => {
+    var todo = new Todo({
+        text: req.body.text
+    });
+
+    todo.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+
+    });
 });
 
-// model of Todo
-var Todo = mongoose.model('Todo', {
-    text: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
 
-    },
-    completed: {
-        type: Boolean,
-        required: true
-    },
-    completedAt: {
-        type: Number,
-        default: null
-    }
+app.listen(3000, () => {
+    console.log('started on port 3000');
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 //create an instance of the model
-var otherTodo = new Todo({
-    text: " learn how to fly   ",
-    completed: false,
-});
+// var otherTodo = new Todo({
+//     text: " learn how to fly   ",
+//     completed: false,
+// });
 
 // save to the database
 // otherTodo.save().then((res) => {
@@ -39,23 +62,15 @@ var otherTodo = new Todo({
 //     console.log('didnt save');
 // });
 
-// User Mdel, email, name
-var User = mongoose.model('User', {
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1
-    }
-});
+
 
 //instance of User
-var user = new User({
-    email: 'blabla@gmail.com   '
-});
+// var user = new User({
+//     email: 'blabla@gmail.com   '
+// });
 
-user.save().then((res) => {
-    console.log('User Saved', res);
-}, (e) => {
-    console.log('user not saved');
-})
+// user.save().then((res) => {
+//     console.log('User Saved', res);
+// }, (e) => {
+//     console.log('user not saved');
+// });
