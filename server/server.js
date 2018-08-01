@@ -19,6 +19,8 @@ var {
 var app = express();
 app.use(bodyParser.json()); //send json to application
 
+
+//add a todo
 app.post('/todos', (req, res) => {
     var todo = new Todo({
         text: req.body.text
@@ -29,6 +31,18 @@ app.post('/todos', (req, res) => {
     }, (e) => {
         res.status(400).send(e);
 
+    });
+});
+
+
+//get todo
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({
+            todos
+        });
+    }, (e) => {
+        res.status(400).send(e);
     });
 });
 
